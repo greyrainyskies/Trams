@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Trams.Models;
 using System.Collections.Generic;
 using System.Text;
+using Alexa.NET.Request;
 
 namespace Trams
 {
@@ -20,18 +21,19 @@ namespace Trams
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            var json = await req.ReadAsStringAsync();
+            var skillRequest = JsonConvert.DeserializeObject<SkillRequest>(json);
+
             string[] stopIds = { "1220430", "1220431", "1122414" };
 
             List<Stop> stops = new List<Stop>();
-            string input = req.Query["count"];
-            int count;
-
-            int.TryParse(input, out count);
+            //string input = req.Query["count"];
+            // int count;
+            //int.TryParse(input, out count);
 
             foreach (var stop in stopIds)
             {
-                var data = await Utils.Data.FetchStopDataAsync(stop, count);
+                var data = await Utils.Data.FetchStopDataAsync(stop);
                 stops.Add(data);
             }
 
