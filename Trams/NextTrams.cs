@@ -11,6 +11,8 @@ using Trams.Models;
 using System.Collections.Generic;
 using System.Text;
 using Alexa.NET.Request;
+using Alexa.NET.Response;
+using Alexa.NET;
 
 namespace Trams
 {
@@ -23,6 +25,7 @@ namespace Trams
         {
             var json = await req.ReadAsStringAsync();
             var skillRequest = JsonConvert.DeserializeObject<SkillRequest>(json);
+            SkillResponse skillResponse = null;
 
             string[] stopIds = { "1220430", "1220431", "1122414" };
 
@@ -63,11 +66,11 @@ namespace Trams
                     sb.Append("in " + minutes + (minutes != 1 ? " minutes" : " minute") + " at ");
                     if (stopTime.Realtime)
                     {
-                        sb.Append(stopTime.RealtimeDepartureTime().Value.ToShortTimeString());
+                        sb.Append(stopTime.RealtimeDepartureTime().Value.ToShortTimeString().Replace(".",":"));
                     }
                     else
                     {
-                        sb.Append(stopTime.ScheduledDepartureTime().ToShortTimeString());
+                        sb.Append(stopTime.ScheduledDepartureTime().ToShortTimeString().Replace(".", ":"));
                     }
                     if (i + 1 >= stop.StoptimesWithoutPatterns.Count)
                     {
@@ -81,7 +84,10 @@ namespace Trams
                 sb.Append(Environment.NewLine);
             }
 
-            return (ActionResult)new OkObjectResult(sb.ToString());
+            skillResponse = ResponseBuilder.Tell(sb.ToString());
+            skillResponse.Response.ShouldEndSession = true;
+
+            return new OkObjectResult(skillResponse);
 
             //return name != null
             //    ? (ActionResult)new OkObjectResult($"Hello, {name}")
