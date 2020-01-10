@@ -23,4 +23,4 @@ In addition to knowing whether I need to run to the tram stop or if I can take m
 
 ## Video Demo
 
-*[Click here to view a video of the skill in use, running on an Alexa Echo](https://youtu.be/BOPlA7HEye0)*
+**[Click here to view a video of the skill in use, running on an Amazon Echo](https://youtu.be/BOPlA7HEye0)**
